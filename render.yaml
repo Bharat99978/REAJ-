@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: jupyter-lab
+    env: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: "8888"
