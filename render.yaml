@@ -7,3 +7,7 @@ services:
     envVars:
       - key: PORT
         value: "8888"
+    disk:
+      - name: jupyter-data
+        mountPath: /root/work
+        sizeGB: 100  # Set storage size to 100 GB
