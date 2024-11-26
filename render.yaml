@@ -1,13 +1,9 @@
 services:
   - type: web
-    name: sshx-service
+    name: tmate-service
     env: docker
     plan: starter
     dockerfilePath: ./Dockerfile
     envVars:
       - key: PORT
-        value: "8888"  # Optional, if you need a specific port
-    disk:
-      - name: sshx-data
-        mountPath: /data
-        sizeGB: 100  # Increased persistent disk size to 100 GB
+        value: "8888" # Required for Render, even though Tmate doesn't use it
