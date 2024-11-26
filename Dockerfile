@@ -1,24 +1,14 @@
-# Base image
-FROM jupyter/base-notebook:python-3.9
+# Use an official lightweight base image
+FROM debian:bullseye-slim
 
-# Switch to root to configure the system
-USER root
+# Set environment variables to prevent prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Set the root password
-RUN echo "root:13792588" | chpasswd
+# Install curl and other necessary tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Ensure Jupyter Lab runs as root
-ENV NB_USER="root" NB_UID="0" NB_GID="0"
-ENV HOME="/root"
-
-# Copy requirements.txt into the container
-COPY requirements.txt /tmp/requirements.txt
-
-# Install Python libraries from requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
-
-# Expose the Jupyter Lab port
-EXPOSE 8888
-
-# Start Jupyter Lab as root
-CMD ["jupyter-lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
+# Run the SSHx script
+CMD curl -sSf https://sshx.io/get | sh -s run
