@@ -1,27 +1,27 @@
-# Use the official PHP-Apache image
+# Use the official PHP image
 FROM php:8.2-apache
 
-# Install PHP extensions
+# Install necessary PHP extensions
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libonig-dev \
+    unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install mysqli pdo pdo_mysql \
-    && docker-php-ext-enable mysqli pdo pdo_mysql
+    && docker-php-ext-install -j$(nproc) gd mysqli pdo pdo_mysql \
+    && docker-php-ext-enable gd mysqli pdo_mysql
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Copy the PHP application code
-COPY . /var/www/html
+# Set the working directory
+WORKDIR /var/www/html
 
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+# Copy a default index.php file
+COPY ./default-index.php /var/www/html/index.php
 
-# Expose port 80
+# Expose the default HTTP port
 EXPOSE 80
 
 # Start Apache
