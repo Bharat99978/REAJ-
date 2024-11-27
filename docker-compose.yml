@@ -2,26 +2,29 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: php-web
     ports:
       - "8080:80"
     volumes:
       - ./html:/var/www/html
     depends_on:
-      - ftp
+      - db
 
-  ftp:
-    image: fauria/vsftpd
-    container_name: ftp-server
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
     ports:
-      - "21:21"
-      - "30000-30009:30000-30009"
-    volumes:
-      - ./html:/home/vsftpd
+      - "3306:3306"
     environment:
-      - FTP_USER=admin
-      - FTP_PASS=admin123
-      - PASV_ADDRESS=127.0.0.1
-      - PASV_MIN_PORT=30000
-      - PASV_MAX_PORT=30009
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
