@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: tmate-service
+    name: sshx-runner
     env: docker
-    plan: starter
-    dockerfilePath: ./Dockerfile
-    envVars:
-      - key: PORT
-        value: "8888" # Required for Render, even though Tmate doesn't use it
+    region: singapore # Adjust based on your preference
+    plan: free
+    dockerfilePath: ./Dockerfile # Path to your Dockerfile
+    autoDeploy: true
+    healthCheckPath: /
