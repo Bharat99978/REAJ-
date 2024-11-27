@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: sshx-runner
-    env: docker
-    region: singapore # Adjust based on your preference
-    plan: free
-    dockerfilePath: ./Dockerfile # Path to your Dockerfile
-    autoDeploy: true
-    healthCheckPath: /
