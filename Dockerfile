@@ -1,8 +1,28 @@
-# Use a lightweight base image
-FROM alpine:latest
+# Use the official PHP-Apache image
+FROM php:8.2-apache
 
-# Install curl and bash
-RUN apk add --no-cache curl bash
+# Install PHP extensions
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install mysqli pdo pdo_mysql \
+    && docker-php-ext-enable mysqli pdo pdo_mysql
 
-# Set the command to be run
-CMD curl -sSf https://sshx.io/get | sh -s run
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
+
+# Copy the PHP application code
+COPY . /var/www/html
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start Apache
+CMD ["apache2-foreground"]
